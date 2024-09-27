@@ -1,0 +1,1 @@
+The idea here is to scrape the web for images of cities, their weather information and air quality index. After having enough data, you can train a single model on both the images and weather information to predict air quality index.
