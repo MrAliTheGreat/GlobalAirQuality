@@ -63,6 +63,15 @@ def captureImageEC(chrome: WebDriver, link, path):
     time.sleep(7)   # Top left live logo disappers!
     screenshotEC(chrome, path)
 
+def fetchWeather(chrome: WebDriver, link):
+    pass
+
+def fetchAQI(chrome: WebDriver, link):
+    pass
+
+def writeTabular(city, filenames, weather, aqi, path = "./dataset/tabular/"):
+    pass
+
 
 chrome = webdriver.Chrome(service = Service(os.environ.get("chromedriver_path")))
 chrome.set_window_size(width = 1080, height = 1920)
@@ -71,13 +80,22 @@ chrome.implicitly_wait(7)
 with open(os.environ.get("source_path"), mode = "r", encoding = "utf-8") as source:
     data = json.load(source)
     for city in data["cities"]:
+        imgFilenames = []
         for link in city["images"]:
             if(city["name"] == "St. John's"):
                 pass
             else:
-                cityPath = f"./dataset/{city['name']}"
+                cityPath = f"./dataset/{city['name']}/"
                 if(not os.path.isdir(cityPath)):
                     os.makedirs(cityPath)
-                captureImageEC(chrome, link, cityPath + f"/{len(os.listdir(cityPath)) + 1}.png")
+                imgFilename = f"{len(os.listdir(cityPath)) + 1}.png"
+                imgFilenames.append(imgFilename)                
+                captureImageEC(chrome, link, cityPath + imgFilename)
+        writeTabular(
+            city = city["name"],
+            filenames = imgFilenames,
+            weather = fetchWeather(chrome, city["weather"]),
+            aqi = fetchAQI(chrome, city["aqi"])
+        )
 
 chrome.close()
