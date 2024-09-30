@@ -5,7 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.common.exceptions import TimeoutException
-import time
+from selenium.webdriver.chrome.options import Options
+import time, datetime
 
 from dotenv import load_dotenv
 import os, json
@@ -23,7 +24,7 @@ def waitForVideoPlayerEC(chrome: WebDriver):
             By.CSS_SELECTOR, "div[id='videoPlayer']"
         ))
     )
-    
+
     try:
         # Wait for possible ad to show up
         WebDriverWait(chrome, 10).until(
@@ -31,8 +32,8 @@ def waitForVideoPlayerEC(chrome: WebDriver):
         )
         # Wait for ad to finish
         WebDriverWait(chrome, adLen).until(
-            lambda _: "vjs-live" in videoPlayer.get_attribute("class") and "vjs-playing" in videoPlayer.get_attribute("class") 
-        )        
+            lambda _: "vjs-live" in videoPlayer.get_attribute("class") and "vjs-playing" in videoPlayer.get_attribute("class")
+        )
     except TimeoutException:
         pass
 
@@ -66,10 +67,12 @@ def screenshotEC(chrome: WebDriver, filename):
 def captureImageEC(chrome: WebDriver, link, path):
     chrome.get(link)
     waitForVideoPlayerEC(chrome)
+    time.sleep(2)
     removeCamInfoEC(chrome)
     removeLogoEC(chrome)
-    time.sleep(7)   # Top left live logo disappers!
+    time.sleep(5)   # Top left live logo disappers!
     screenshotEC(chrome, path)
+    print(f"{datetime.datetime.now()}: {path} created")
 
 def fetchLocalDate(chrome: WebDriver):
     return WebDriverWait(chrome, 20).until(
@@ -131,7 +134,11 @@ def fetchRemainingWeatherDetails(chrome: WebDriver, info):
     return info
 
 def fetchWeather(chrome: WebDriver, link):
-    chrome.get(link)
+    try:
+        chrome.get(link)
+    except TimeoutException:
+        pass
+
     info = {
         "Date": "",
         "Time": "",
@@ -163,12 +170,12 @@ def fetchAQI(chrome: WebDriver, link):
             By.CSS_SELECTOR, "div[class='report__pi-number']"
         ))
     ).find_element(
-        By.TAG_NAME, "span"
+        By.CSS_SELECTOR, "span[data-role='current-pi']"
     ).text
 
 def writeTabular(city, filenames, weather, aqi, path = "./dataset/tabular/"):
     if(not os.path.isdir(path)):
-        os.makedirs(path)    
+        os.makedirs(path)
 
     info = weather
     for filename in filenames:
@@ -176,10 +183,17 @@ def writeTabular(city, filenames, weather, aqi, path = "./dataset/tabular/"):
         if(not os.path.exists(path + f"{city}.csv")):
             pd.DataFrame(columns = list(info.keys())).to_csv(path + f"{city}.csv" , index = False, header = True)
         pd.DataFrame(info , index = [0]).to_csv(path + f"{city}.csv", mode = "a", index = False, header = False)
+    print(f"{datetime.datetime.now()}: {path + city}.csv updated - {len(filenames)} new")
 
 
-chrome = webdriver.Chrome(service = Service(os.environ.get("chromedriver_path")))
-chrome.set_window_size(width = 1080, height = 1920)
+options = Options()
+# options.add_argument('--headless=new')
+# options.add_argument("--user-agent=Chrome/121.0.6105.0")
+# options.add_argument("--disable-gpu")
+# options.add_argument("--no-sandbox")
+options.add_argument("--window-size=1080,1920")
+chrome = webdriver.Chrome(service = Service(os.environ.get("chromedriver_path")), options = options)
+chrome.set_page_load_timeout(30)
 chrome.implicitly_wait(7)
 
 with open(os.environ.get("source_path"), mode = "r", encoding = "utf-8") as source:
@@ -194,7 +208,7 @@ with open(os.environ.get("source_path"), mode = "r", encoding = "utf-8") as sour
                 if(not os.path.isdir(cityPath)):
                     os.makedirs(cityPath)
                 imgFilename = f"{len(os.listdir(cityPath)) + 1}.png"
-                imgFilenames.append(imgFilename)                
+                imgFilenames.append(imgFilename)
                 captureImageEC(chrome, link, cityPath + imgFilename)
             writeTabular(
                 city = city["name"],
@@ -204,3 +218,4 @@ with open(os.environ.get("source_path"), mode = "r", encoding = "utf-8") as sour
             )
 
 chrome.close()
+
