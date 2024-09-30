@@ -1,4 +1,4 @@
 .env
 source.json
-chromedriver.exe
+chromedriver
 dataset/

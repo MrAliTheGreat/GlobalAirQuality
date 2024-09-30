@@ -23,10 +23,18 @@ def waitForVideoPlayerEC(chrome: WebDriver):
             By.CSS_SELECTOR, "div[id='videoPlayer']"
         ))
     )
-    # Wait for ad to finish
-    WebDriverWait(chrome, adLen).until(
-        lambda _: "vjs-live" in videoPlayer.get_attribute("class") and "vjs-playing" in videoPlayer.get_attribute("class") 
-    )
+    
+    try:
+        # Wait for possible ad to show up
+        WebDriverWait(chrome, 10).until(
+            lambda _: "vjs-ad-playing" in videoPlayer.get_attribute("class")
+        )
+        # Wait for ad to finish
+        WebDriverWait(chrome, adLen).until(
+            lambda _: "vjs-live" in videoPlayer.get_attribute("class") and "vjs-playing" in videoPlayer.get_attribute("class") 
+        )        
+    except TimeoutException:
+        pass
 
 def removeCamInfoEC(chrome: WebDriver):
     try:
