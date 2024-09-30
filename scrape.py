@@ -63,8 +63,94 @@ def captureImageEC(chrome: WebDriver, link, path):
     time.sleep(7)   # Top left live logo disappers!
     screenshotEC(chrome, path)
 
+def fetchLocalDate(chrome: WebDriver):
+    return WebDriverWait(chrome, 20).until(
+        EC.presence_of_element_located((
+            By.CSS_SELECTOR, "div[class='content-module subnav-pagination']"
+        ))
+    ).find_element(
+        By.TAG_NAME, "div"
+    ).text
+
+def fetchLocalTime(chrome: WebDriver):
+    return chrome.find_element(
+        By.CSS_SELECTOR, "div[class='card-header spaced-content']"
+    ).find_element(
+        By.TAG_NAME, "p"
+    ).text
+
+def fetchTemperature(chrome: WebDriver):
+    return chrome.find_element(
+        By.CSS_SELECTOR, "div[class='current-weather-info']"
+    ).find_element(
+        By.CSS_SELECTOR, "div[class='display-temp']"
+    ).text[:-2]
+
+def fetchRealFeel(chrome: WebDriver):
+    return chrome.find_element(
+        By.CSS_SELECTOR, "div[class='current-weather-extra no-realfeel-phrase']"
+    ).find_element(
+        By.TAG_NAME, "div"
+    ).text.split(" ")[-1][:-1]
+
+def fetchCurrentWeatherStatus(chrome: WebDriver):
+    return chrome.find_element(
+        By.CSS_SELECTOR, "div[class='phrase']"
+    ).text
+
+def fetchRemainingWeatherDetails(chrome: WebDriver, info):
+    details = chrome.find_element(
+        By.CSS_SELECTOR, "div[class='current-weather-details no-realfeel-phrase ']"
+    ).find_elements(
+        By.CSS_SELECTOR, "div[class='detail-item spaced-content']"
+    )
+    for detail in details:
+        if(detail.text):
+            tag, val = detail.text.split("\n")
+            if(tag != "Max UV Index" and tag != "Wind"):
+                if(tag == "Wind Gusts" or tag == "Visibility" or tag == "Cloud Ceiling"):
+                    info[tag] = val.split(" ")[0]
+                if(tag == "Indoor Humidity"):
+                    h, status = val.split("(")
+                    info["Indoor Humidity"] = int(h[:-2]) / 100
+                    info["Humidity Status"] = status[:-1]
+                if(tag == "Humidity" or tag == "Cloud Cover"):
+                    info[tag] = int(val[:-1]) / 100
+                if(tag == "Dew Point"):
+                    info[tag] = val[:-3]
+                if(tag == "Pressure"):
+                    info["Pressure Direction"], info[tag], _ = val.split(" ")
+    return info
+
 def fetchWeather(chrome: WebDriver, link):
-    pass
+    chrome.get(link)
+    info = {
+        "Filename": "",
+        "Date": "",
+        "Time": "",
+        "Temperature": "",
+        "Real Feel": "",
+        "Weather Status": "",
+        "Wind Gusts": "",
+        "Humidity": "",
+        "Indoor Humidity": "",
+        "Humidity Status": "",
+        "Dew Point": "",
+        "Pressure": "",
+        "Pressure Direction": "",
+        "Cloud Cover": "",
+        "Visibility": "",
+        "Cloud Ceiling": ""
+    }
+    info["Date"] = fetchLocalDate(chrome)
+    info["Time"] = fetchLocalTime(chrome)
+    info["Temperature"]= fetchTemperature(chrome)
+    info["Real Feel"] = fetchRealFeel(chrome)
+    info["Weather Status"] = fetchCurrentWeatherStatus(chrome)
+    info = fetchRemainingWeatherDetails(chrome, info)
+    print(info)
+
+
 
 def fetchAQI(chrome: WebDriver, link):
     pass
@@ -77,25 +163,29 @@ chrome = webdriver.Chrome(service = Service(os.environ.get("chromedriver_path"))
 chrome.set_window_size(width = 1080, height = 1920)
 chrome.implicitly_wait(7)
 
-with open(os.environ.get("source_path"), mode = "r", encoding = "utf-8") as source:
-    data = json.load(source)
-    for city in data["cities"]:
-        imgFilenames = []
-        for link in city["images"]:
-            if(city["name"] == "St. John's"):
-                pass
-            else:
-                cityPath = f"./dataset/{city['name']}/"
-                if(not os.path.isdir(cityPath)):
-                    os.makedirs(cityPath)
-                imgFilename = f"{len(os.listdir(cityPath)) + 1}.png"
-                imgFilenames.append(imgFilename)                
-                captureImageEC(chrome, link, cityPath + imgFilename)
-        writeTabular(
-            city = city["name"],
-            filenames = imgFilenames,
-            weather = fetchWeather(chrome, city["weather"]),
-            aqi = fetchAQI(chrome, city["aqi"])
-        )
+# with open(os.environ.get("source_path"), mode = "r", encoding = "utf-8") as source:
+#     data = json.load(source)
+#     for city in data["cities"]:
+#         imgFilenames = []
+#         for link in city["images"]:
+#             if(city["name"] == "St. John's"):
+#                 pass
+#             else:
+#                 cityPath = f"./dataset/{city['name']}/"
+#                 if(not os.path.isdir(cityPath)):
+#                     os.makedirs(cityPath)
+#                 imgFilename = f"{len(os.listdir(cityPath)) + 1}.png"
+#                 imgFilenames.append(imgFilename)                
+#                 captureImageEC(chrome, link, cityPath + imgFilename)
+#         writeTabular(
+#             city = city["name"],
+#             filenames = imgFilenames,
+#             weather = fetchWeather(chrome, city["weather"]),
+#             aqi = fetchAQI(chrome, city["aqi"])
+#         )
+
+
+fetchWeather(chrome, "https://www.accuweather.com/en/nl/amsterdam/249758/current-weather/249758")
+fetchWeather(chrome, "https://www.accuweather.com/en/us/las-vegas/89101/current-weather/329506")
 
 chrome.close()
