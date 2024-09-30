@@ -8,8 +8,8 @@ from selenium.common.exceptions import TimeoutException
 import time
 
 from dotenv import load_dotenv
-import os
-import json
+import os, json
+import pandas as pd
 
 load_dotenv()
 
@@ -159,34 +159,40 @@ def fetchAQI(chrome: WebDriver, link):
     ).text
 
 def writeTabular(city, filenames, weather, aqi, path = "./dataset/tabular/"):
-    pass
+    if(not os.path.isdir(path)):
+        os.makedirs(path)    
+
+    info = weather
+    for filename in filenames:
+        info["Filename"] = filename; info["AQI"] = aqi
+        if(not os.path.exists(path + f"{city}.csv")):
+            pd.DataFrame(columns = list(info.keys())).to_csv(path + f"{city}.csv" , index = False, header = True)
+        pd.DataFrame(info , index = [0]).to_csv(path + f"{city}.csv", mode = "a", index = False, header = False)
 
 
 chrome = webdriver.Chrome(service = Service(os.environ.get("chromedriver_path")))
 chrome.set_window_size(width = 1080, height = 1920)
 chrome.implicitly_wait(7)
 
-# with open(os.environ.get("source_path"), mode = "r", encoding = "utf-8") as source:
-#     data = json.load(source)
-#     for city in data["cities"]:
-#         imgFilenames = []
-#         for link in city["images"]:
-#             if(city["name"] == "St. John's"):
-#                 pass
-#             else:
-#                 cityPath = f"./dataset/{city['name']}/"
-#                 if(not os.path.isdir(cityPath)):
-#                     os.makedirs(cityPath)
-#                 imgFilename = f"{len(os.listdir(cityPath)) + 1}.png"
-#                 imgFilenames.append(imgFilename)                
-#                 captureImageEC(chrome, link, cityPath + imgFilename)
-#         writeTabular(
-#             city = city["name"],
-#             filenames = imgFilenames,
-#             weather = fetchWeather(chrome, city["weather"]),
-#             aqi = fetchAQI(chrome, city["aqi"])
-#         )
-
-print(fetchAQI(chrome, ""))
+with open(os.environ.get("source_path"), mode = "r", encoding = "utf-8") as source:
+    data = json.load(source)
+    for city in data["cities"]:
+        if(city["name"] == "St. John's"):
+            pass
+        else:
+            imgFilenames = []
+            for link in city["images"]:
+                cityPath = f"./dataset/{city['name']}/"
+                if(not os.path.isdir(cityPath)):
+                    os.makedirs(cityPath)
+                imgFilename = f"{len(os.listdir(cityPath)) + 1}.png"
+                imgFilenames.append(imgFilename)                
+                captureImageEC(chrome, link, cityPath + imgFilename)
+            writeTabular(
+                city = city["name"],
+                filenames = imgFilenames,
+                weather = fetchWeather(chrome, city["weather"]),
+                aqi = fetchAQI(chrome, city["aqi"])
+            )
 
 chrome.close()
