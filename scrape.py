@@ -125,7 +125,6 @@ def fetchRemainingWeatherDetails(chrome: WebDriver, info):
 def fetchWeather(chrome: WebDriver, link):
     chrome.get(link)
     info = {
-        "Filename": "",
         "Date": "",
         "Time": "",
         "Temperature": "",
@@ -147,10 +146,7 @@ def fetchWeather(chrome: WebDriver, link):
     info["Temperature"]= fetchTemperature(chrome)
     info["Real Feel"] = fetchRealFeel(chrome)
     info["Weather Status"] = fetchCurrentWeatherStatus(chrome)
-    info = fetchRemainingWeatherDetails(chrome, info)
-    print(info)
-
-
+    return fetchRemainingWeatherDetails(chrome, info)
 
 def fetchAQI(chrome: WebDriver, link):
     pass
@@ -163,29 +159,25 @@ chrome = webdriver.Chrome(service = Service(os.environ.get("chromedriver_path"))
 chrome.set_window_size(width = 1080, height = 1920)
 chrome.implicitly_wait(7)
 
-# with open(os.environ.get("source_path"), mode = "r", encoding = "utf-8") as source:
-#     data = json.load(source)
-#     for city in data["cities"]:
-#         imgFilenames = []
-#         for link in city["images"]:
-#             if(city["name"] == "St. John's"):
-#                 pass
-#             else:
-#                 cityPath = f"./dataset/{city['name']}/"
-#                 if(not os.path.isdir(cityPath)):
-#                     os.makedirs(cityPath)
-#                 imgFilename = f"{len(os.listdir(cityPath)) + 1}.png"
-#                 imgFilenames.append(imgFilename)                
-#                 captureImageEC(chrome, link, cityPath + imgFilename)
-#         writeTabular(
-#             city = city["name"],
-#             filenames = imgFilenames,
-#             weather = fetchWeather(chrome, city["weather"]),
-#             aqi = fetchAQI(chrome, city["aqi"])
-#         )
-
-
-fetchWeather(chrome, "https://www.accuweather.com/en/nl/amsterdam/249758/current-weather/249758")
-fetchWeather(chrome, "https://www.accuweather.com/en/us/las-vegas/89101/current-weather/329506")
+with open(os.environ.get("source_path"), mode = "r", encoding = "utf-8") as source:
+    data = json.load(source)
+    for city in data["cities"]:
+        imgFilenames = []
+        for link in city["images"]:
+            if(city["name"] == "St. John's"):
+                pass
+            else:
+                cityPath = f"./dataset/{city['name']}/"
+                if(not os.path.isdir(cityPath)):
+                    os.makedirs(cityPath)
+                imgFilename = f"{len(os.listdir(cityPath)) + 1}.png"
+                imgFilenames.append(imgFilename)                
+                captureImageEC(chrome, link, cityPath + imgFilename)
+        writeTabular(
+            city = city["name"],
+            filenames = imgFilenames,
+            weather = fetchWeather(chrome, city["weather"]),
+            aqi = fetchAQI(chrome, city["aqi"])
+        )
 
 chrome.close()
