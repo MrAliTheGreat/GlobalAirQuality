@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
-import time, datetime
+import time, datetime, signal
 
 from dotenv import load_dotenv
 import os, json
@@ -14,6 +14,10 @@ import pandas as pd
 
 load_dotenv()
 
+
+def timeoutHandler(signum, frame):
+    print(f"{datetime.datetime.now()}: Link froze - reloading!")
+    raise TimeoutException
 
 def waitForVideoPlayerEC(chrome: WebDriver):
     adLen = 60
@@ -65,7 +69,11 @@ def screenshotEC(chrome: WebDriver, filename):
     ).screenshot(filename)
 
 def captureImageEC(chrome: WebDriver, link, path):
-    chrome.get(link)
+    try:
+        chrome.get(link)
+    except TimeoutException:
+        chrome.refresh()
+    
     waitForVideoPlayerEC(chrome)
     time.sleep(2)
     removeCamInfoEC(chrome)
@@ -164,7 +172,11 @@ def fetchWeather(chrome: WebDriver, link):
     return fetchRemainingWeatherDetails(chrome, info)
 
 def fetchAQI(chrome: WebDriver, link):
-    chrome.get(link)
+    try:
+        chrome.get(link)
+    except TimeoutException:
+        chrome.refresh()
+
     return WebDriverWait(chrome, 20).until(
         EC.visibility_of_element_located((
             By.CSS_SELECTOR, "div[class='report__pi-number']"
@@ -187,7 +199,6 @@ def writeTabular(city, filenames, weather, aqi, path = "./dataset/tabular/"):
 
 
 
-
 options = Options()
 # options.add_argument('--headless=new')
 # options.add_argument("--user-agent=Chrome/121.0.6105.0")
@@ -200,6 +211,9 @@ options.add_argument("--window-size=1080,1920")
 
 startTime = time.time()
 waitPeriodInMinutes = 60
+
+signal.signal(signal.SIGALRM, timeoutHandler)
+alarmLenInMinutes = 5
 
 while(True):
     print(f"{datetime.datetime.now()}: cycle started!")
@@ -221,13 +235,40 @@ while(True):
                         os.makedirs(cityPath)
                     imgFilename = f"{len(os.listdir(cityPath)) + 1}.png"
                     imgFilenames.append(imgFilename)
-                    captureImageEC(chrome, link, cityPath + imgFilename)
-                writeTabular(
-                    city = city["name"],
-                    filenames = imgFilenames,
-                    weather = fetchWeather(chrome, city["weather"]),
-                    aqi = fetchAQI(chrome, city["aqi"])
-                )
+
+                    signal.alarm(alarmLenInMinutes * 60)
+                    try:
+                        captureImageEC(chrome, link, cityPath + imgFilename)
+                    except TimeoutException:
+                        chrome.close()
+                        chrome = webdriver.Chrome(service = Service(os.environ.get("chromedriver_path")), options = options)
+                        chrome.set_page_load_timeout(20)
+                        chrome.implicitly_wait(7)
+                        captureImageEC(chrome, link, cityPath + imgFilename)
+                    else:
+                        signal.alarm(0)
+                
+                signal.alarm(alarmLenInMinutes * 60)
+                try:
+                    writeTabular(
+                        city = city["name"],
+                        filenames = imgFilenames,
+                        weather = fetchWeather(chrome, city["weather"]),
+                        aqi = fetchAQI(chrome, city["aqi"])
+                    )
+                except TimeoutException:
+                    chrome.close()
+                    chrome = webdriver.Chrome(service = Service(os.environ.get("chromedriver_path")), options = options)
+                    chrome.set_page_load_timeout(20)
+                    chrome.implicitly_wait(7)
+                    writeTabular(
+                        city = city["name"],
+                        filenames = imgFilenames,
+                        weather = fetchWeather(chrome, city["weather"]),
+                        aqi = fetchAQI(chrome, city["aqi"])
+                    )                    
+                else:
+                    signal.alarm(0)
 
     chrome.close()
     print(f"{datetime.datetime.now()}: cycle finished!")

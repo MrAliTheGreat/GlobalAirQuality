@@ -346,3 +346,128 @@
 2024-10-03 11:14:53.360602: ./dataset/Seattle/8.png created
 2024-10-03 11:15:14.509587: ./dataset/tabular/Seattle.csv updated - 2 new
 2024-10-03 11:15:14.614158: cycle finished!
+2024-10-03 11:47:11.464298: cycle started!
+2024-10-03 11:47:39.966221: ./dataset/Las Vegas/15.png created
+2024-10-03 11:48:13.503882: ./dataset/tabular/Las Vegas.csv updated - 1 new
+2024-10-03 11:57:54.751074: cycle started!
+2024-10-03 11:58:22.981381: ./dataset/Las Vegas/16.png created
+2024-10-03 11:58:54.720216: ./dataset/tabular/Las Vegas.csv updated - 1 new
+2024-10-03 11:59:14.190963: ./dataset/San Francisco/12.png created
+2024-10-03 11:59:41.331768: ./dataset/tabular/San Francisco.csv updated - 1 new
+2024-10-03 12:00:11.209354: ./dataset/Dallas/19.png created
+2024-10-03 12:00:32.234088: ./dataset/Dallas/20.png created
+2024-10-03 12:00:54.264809: ./dataset/tabular/Dallas.csv updated - 2 new
+2024-10-03 12:01:13.338097: ./dataset/Houston/9.png created
+2024-10-03 12:01:33.962383: ./dataset/tabular/Houston.csv updated - 1 new
+2024-10-03 12:01:54.505761: ./dataset/Pittsburgh/8.png created
+2024-10-03 12:02:16.813626: ./dataset/tabular/Pittsburgh.csv updated - 1 new
+2024-10-03 12:02:35.752091: ./dataset/Louisville/8.png created
+2024-10-03 12:03:00.779664: ./dataset/tabular/Louisville.csv updated - 1 new
+2024-10-03 12:03:20.929347: ./dataset/New York/25.png created
+2024-10-03 12:03:40.941245: ./dataset/New York/26.png created
+2024-10-03 12:03:59.924452: ./dataset/New York/27.png created
+2024-10-03 12:04:18.824729: ./dataset/New York/28.png created
+2024-10-03 12:04:43.413921: ./dataset/tabular/New York.csv updated - 4 new
+2024-10-03 12:05:02.997978: ./dataset/Coney Island/7.png created
+2024-10-03 12:05:24.936344: ./dataset/tabular/Coney Island.csv updated - 1 new
+2024-10-03 12:05:44.417058: ./dataset/Edmonton/7.png created
+2024-10-03 12:06:05.765244: ./dataset/tabular/Edmonton.csv updated - 1 new
+2024-10-03 12:06:25.640610: ./dataset/Honolulu/7.png created
+2024-10-03 12:06:47.534159: ./dataset/tabular/Honolulu.csv updated - 1 new
+2024-10-03 12:07:06.670267: ./dataset/Rio de Janeiro/7.png created
+2024-10-03 12:07:28.511490: ./dataset/tabular/Rio de Janeiro.csv updated - 1 new
+2024-10-03 12:07:47.625631: ./dataset/Amsterdam/7.png created
+2024-10-03 12:08:08.388394: ./dataset/tabular/Amsterdam.csv updated - 1 new
+2024-10-03 12:08:27.920363: ./dataset/Moshi/7.png created
+2024-10-03 12:08:53.323552: ./dataset/tabular/Moshi.csv updated - 1 new
+2024-10-03 12:09:41.394360: ./dataset/Cape Town/6.png created
+2024-10-03 12:10:07.620514: ./dataset/tabular/Cape Town.csv updated - 1 new
+2024-10-03 12:10:28.534001: ./dataset/Palma/6.png created
+2024-10-03 12:10:50.538936: ./dataset/tabular/Palma.csv updated - 1 new
+2024-10-03 12:11:10.718474: ./dataset/Syracuse/6.png created
+2024-10-03 12:11:32.737607: ./dataset/tabular/Syracuse.csv updated - 1 new
+2024-10-03 12:11:52.049046: ./dataset/Moscow/6.png created
+2024-10-03 12:12:14.080184: ./dataset/tabular/Moscow.csv updated - 1 new
+2024-10-03 12:12:35.363090: ./dataset/Pattaya/5.png created
+2024-10-03 12:12:56.257663: ./dataset/tabular/Pattaya.csv updated - 1 new
+2024-10-03 12:13:15.619658: ./dataset/Washington D.C./9.png created
+2024-10-03 12:13:34.536771: ./dataset/Washington D.C./10.png created
+2024-10-03 12:13:55.698976: ./dataset/tabular/Washington D.C..csv updated - 2 new
+2024-10-03 12:14:14.888170: ./dataset/Queenstown/5.png created
+2024-10-03 12:14:42.071508: ./dataset/tabular/Queenstown.csv updated - 1 new
+2024-10-03 12:15:02.851730: ./dataset/Notre Dame/5.png created
+2024-10-03 12:15:24.707829: ./dataset/tabular/Notre Dame.csv updated - 1 new
+2024-10-03 12:15:44.597699: ./dataset/Fort Lauderdale/5.png created
+2024-10-03 12:16:07.067061: ./dataset/tabular/Fort Lauderdale.csv updated - 1 new
+2024-10-03 12:16:26.896137: ./dataset/Chicago/13.png created
+2024-10-03 12:16:45.916514: ./dataset/Chicago/14.png created
+2024-10-03 12:17:05.438552: ./dataset/Chicago/15.png created
+2024-10-03 12:17:27.406776: ./dataset/tabular/Chicago.csv updated - 3 new
+2024-10-03 12:17:46.870450: ./dataset/Niagara Falls/5.png created
+2024-10-03 12:18:13.099265: ./dataset/tabular/Niagara Falls.csv updated - 1 new
+2024-10-03 12:18:32.339083: ./dataset/Ojai/5.png created
+2024-10-03 12:18:58.917482: ./dataset/tabular/Ojai.csv updated - 1 new
+2024-10-03 12:19:18.703356: ./dataset/Oklahoma City/5.png created
+2024-10-03 12:19:50.092817: ./dataset/tabular/Oklahoma City.csv updated - 1 new
+2024-10-03 12:20:11.410411: ./dataset/Philadelphia/5.png created
+2024-10-03 12:20:32.669636: ./dataset/tabular/Philadelphia.csv updated - 1 new
+2024-10-03 12:20:52.069329: ./dataset/Cleveland/5.png created
+2024-10-03 12:21:13.813598: ./dataset/tabular/Cleveland.csv updated - 1 new
+2024-10-03 12:21:33.822584: ./dataset/Cincinnati/5.png created
+2024-10-03 12:21:55.515238: ./dataset/tabular/Cincinnati.csv updated - 1 new
+2024-10-03 12:22:15.439768: ./dataset/Atlanta/9.png created
+2024-10-03 12:22:34.571117: ./dataset/Atlanta/10.png created
+2024-10-03 12:22:55.268222: ./dataset/tabular/Atlanta.csv updated - 2 new
+2024-10-03 12:23:15.873160: ./dataset/St. Louis/5.png created
+2024-10-03 12:23:40.425149: ./dataset/tabular/St. Louis.csv updated - 1 new
+2024-10-03 12:23:59.591004: ./dataset/Kansas City/5.png created
+2024-10-03 12:24:25.497432: ./dataset/tabular/Kansas City.csv updated - 1 new
+2024-10-03 12:24:44.793047: ./dataset/Seattle/9.png created
+2024-10-03 12:25:03.725713: ./dataset/Seattle/10.png created
+2024-10-03 12:25:24.519369: ./dataset/tabular/Seattle.csv updated - 2 new
+2024-10-03 12:25:24.628033: cycle finished!
+2024-10-03 12:57:54.849736: cycle started!
+2024-10-03 12:58:23.799598: ./dataset/Las Vegas/17.png created
+2024-10-03 12:58:53.071487: ./dataset/tabular/Las Vegas.csv updated - 1 new
+2024-10-03 12:59:12.573858: ./dataset/San Francisco/13.png created
+2024-10-03 12:59:38.555858: ./dataset/tabular/San Francisco.csv updated - 1 new
+2024-10-03 12:59:57.847853: ./dataset/Dallas/21.png created
+2024-10-03 13:00:17.812606: ./dataset/Dallas/22.png created
+2024-10-03 13:00:40.076192: ./dataset/tabular/Dallas.csv updated - 2 new
+2024-10-03 13:01:01.793171: ./dataset/Houston/10.png created
+2024-10-03 13:01:23.540141: ./dataset/tabular/Houston.csv updated - 1 new
+2024-10-03 13:01:44.559076: ./dataset/Pittsburgh/9.png created
+2024-10-03 13:02:06.359097: ./dataset/tabular/Pittsburgh.csv updated - 1 new
+2024-10-03 13:02:25.530559: ./dataset/Louisville/9.png created
+2024-10-03 13:02:56.510002: ./dataset/tabular/Louisville.csv updated - 1 new
+2024-10-03 13:03:16.029265: ./dataset/New York/29.png created
+2024-10-03 13:03:34.858102: ./dataset/New York/30.png created
+2024-10-03 13:03:54.469675: ./dataset/New York/31.png created
+2024-10-03 13:04:13.384867: ./dataset/New York/32.png created
+2024-10-03 13:04:42.922990: ./dataset/tabular/New York.csv updated - 4 new
+2024-10-03 13:05:02.698012: ./dataset/Coney Island/8.png created
+2024-10-03 13:05:24.455257: ./dataset/tabular/Coney Island.csv updated - 1 new
+2024-10-03 13:05:44.126613: ./dataset/Edmonton/8.png created
+2024-10-03 13:06:05.834691: ./dataset/tabular/Edmonton.csv updated - 1 new
+2024-10-03 13:06:25.279395: ./dataset/Honolulu/8.png created
+2024-10-03 13:06:47.134732: ./dataset/tabular/Honolulu.csv updated - 1 new
+2024-10-03 13:07:06.915269: ./dataset/Rio de Janeiro/8.png created
+2024-10-03 13:07:27.919616: ./dataset/tabular/Rio de Janeiro.csv updated - 1 new
+2024-10-03 13:07:47.122299: ./dataset/Amsterdam/8.png created
+2024-10-03 13:08:26.661726: ./dataset/tabular/Amsterdam.csv updated - 1 new
+2024-10-03 13:08:46.533681: ./dataset/Moshi/8.png created
+2024-10-03 13:09:23.269433: ./dataset/tabular/Moshi.csv updated - 1 new
+2024-10-03 13:10:11.947402: ./dataset/Cape Town/7.png created
+2024-10-03 13:10:35.221811: ./dataset/tabular/Cape Town.csv updated - 1 new
+2024-10-03 13:10:54.497943: ./dataset/Palma/7.png created
+2024-10-03 13:11:16.594364: ./dataset/tabular/Palma.csv updated - 1 new
+2024-10-03 13:11:36.002393: ./dataset/Syracuse/7.png created
+2024-10-03 15:18:28.521091: cycle started!
+2024-10-03 15:18:49.795922: cycle started!
+2024-10-03 15:19:05.134593: cycle started!
+2024-10-03 15:19:32.811559: ./dataset/Las Vegas/18.png created
+2024-10-03 15:19:55.809595: ./dataset/tabular/Las Vegas.csv updated - 1 new
+2024-10-03 15:20:16.486891: ./dataset/San Francisco/14.png created
+2024-10-03 15:20:37.676244: ./dataset/tabular/San Francisco.csv updated - 1 new
+2024-10-03 15:20:58.064184: ./dataset/Dallas/23.png created
+2024-10-03 15:21:17.809178: ./dataset/Dallas/24.png created
