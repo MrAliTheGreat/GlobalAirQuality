@@ -9,6 +9,7 @@ from selenium.webdriver.chrome.options import Options
 import time, datetime, signal
 
 from dotenv import load_dotenv
+from random import randint
 import os, json
 import pandas as pd
 
@@ -16,7 +17,7 @@ load_dotenv()
 
 
 def timeoutHandler(signum, frame):
-    print(f"{datetime.datetime.now()}: Link froze - reloading!")
+    print(f"{datetime.datetime.now()}: ! Link froze - reloading!")
     raise TimeoutException
 
 def waitForVideoPlayerEC(chrome: WebDriver):
@@ -69,10 +70,15 @@ def screenshotEC(chrome: WebDriver, filename):
     ).screenshot(filename)
 
 def captureImageEC(chrome: WebDriver, link, path):
-    try:
-        chrome.get(link)
-    except TimeoutException:
-        chrome.refresh()
+    while(True):
+        try:
+            chrome.get(link)
+        except TimeoutException:
+            print(f"{datetime.datetime.now()}: ! timeout in EC - waiting & reloading!")
+            time.sleep(randint(1, 3) * 60)
+            continue
+        else:
+            break
     
     waitForVideoPlayerEC(chrome)
     time.sleep(2)
@@ -184,10 +190,15 @@ def fetchAQI(chrome: WebDriver, link):
         "Amount-O3": "",
     }
     
-    try:
-        chrome.get(link)
-    except TimeoutException:
-        chrome.refresh()
+    while(True):
+        try:
+            chrome.get(link)
+        except TimeoutException:
+            print(f"{datetime.datetime.now()}: ! timeout in AQI - waiting & reloading!")
+            time.sleep(randint(1, 3) * 60)
+            continue
+        else:
+            break
 
     info["AQI"] = WebDriverWait(chrome, 20).until(
         EC.visibility_of_element_located((
