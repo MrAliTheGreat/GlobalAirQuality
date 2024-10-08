@@ -172,12 +172,24 @@ def fetchWeather(chrome: WebDriver, link):
     return fetchRemainingWeatherDetails(chrome, info)
 
 def fetchAQI(chrome: WebDriver, link):
+    info = {
+        "AQI": "",
+        "AQI-PM2.5": "",
+        "AQI-PM10": "",
+        "AQI-NO2": "",
+        "AQI-O3": "",
+        "Amount-PM2.5": "",
+        "Amount-PM10": "",
+        "Amount-NO2": "",
+        "Amount-O3": "",
+    }
+    
     try:
         chrome.get(link)
     except TimeoutException:
         chrome.refresh()
 
-    return WebDriverWait(chrome, 20).until(
+    info["AQI"] = WebDriverWait(chrome, 20).until(
         EC.visibility_of_element_located((
             By.CSS_SELECTOR, "div[class='report__pi-number']"
         ))
@@ -185,13 +197,37 @@ def fetchAQI(chrome: WebDriver, link):
         By.CSS_SELECTOR, "span[data-role='current-pi']"
     ).text
 
+    aqi, pollutants = WebDriverWait(chrome, 20).until(
+        EC.visibility_of_element_located((
+            By.CSS_SELECTOR, "div[class='pollutants-desktop']"
+        ))
+    ).find_elements(
+        By.CSS_SELECTOR, "ul[class=pollutants-desktop__list]"
+    )
+
+    for val in aqi.text.split("\n"):
+        val = val.strip()
+        if(("AQI-" + val) in info.keys()):
+            info["AQI-" + val] = prev
+        else:
+            prev = val
+
+    for val in pollutants.text.split("\n"):
+        val = val.strip()
+        if(("Amount-" + val) in info.keys()):
+            info["Amount-" + val] = prev
+        else:
+            prev = val
+
+    return info
+
 def writeTabular(city, filenames, weather, aqi, path = "./dataset/tabular/"):
     if(not os.path.isdir(path)):
         os.makedirs(path)
 
-    info = weather
+    info = {**weather, **aqi}
     for filename in filenames:
-        info["Filename"] = filename; info["AQI"] = aqi
+        info["Filename"] = filename
         if(not os.path.exists(path + f"{city}.csv")):
             pd.DataFrame(columns = list(info.keys())).to_csv(path + f"{city}.csv" , index = False, header = True)
         pd.DataFrame(info , index = [0]).to_csv(path + f"{city}.csv", mode = "a", index = False, header = False)
@@ -266,7 +302,7 @@ while(True):
                         filenames = imgFilenames,
                         weather = fetchWeather(chrome, city["weather"]),
                         aqi = fetchAQI(chrome, city["aqi"])
-                    )                    
+                    )
                 else:
                     signal.alarm(0)
 
