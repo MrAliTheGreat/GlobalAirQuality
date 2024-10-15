@@ -20,6 +20,16 @@ def timeoutHandler(signum, frame):
     print(f"{datetime.datetime.now()}: ! Link froze - reloading!")
     raise TimeoutException
 
+def resetBrowser(chrome, options, pageLoadTimeOut = 20):
+    chrome.close()
+    chrome = webdriver.Chrome(
+        service = Service(os.environ.get("chromedriver_path")),
+        options = options
+    )
+    chrome.set_page_load_timeout(pageLoadTimeOut)
+    chrome.implicitly_wait(7)
+    return chrome
+
 def waitForVideoPlayerEC(chrome: WebDriver):
     adLen = 60
 
@@ -69,13 +79,14 @@ def screenshotEC(chrome: WebDriver, filename):
         By.CSS_SELECTOR, "video[id='videoPlayer_html5_api']"
     ).screenshot(filename)
 
-def captureImageEC(chrome: WebDriver, link, path):
+def captureImageEC(chrome: WebDriver, link, path, options):
     while(True):
         try:
             chrome.get(link)
         except TimeoutException:
             print(f"{datetime.datetime.now()}: ! timeout in EC - waiting & reloading!")
             time.sleep(randint(1, 3) * 60)
+            chrome = resetBrowser(chrome, options)
             continue
         else:
             break
@@ -87,6 +98,7 @@ def captureImageEC(chrome: WebDriver, link, path):
     time.sleep(5)   # Top left live logo disappers!
     screenshotEC(chrome, path)
     print(f"{datetime.datetime.now()}: {path} created")
+    return chrome
 
 def fetchLocalDate(chrome: WebDriver):
     return WebDriverWait(chrome, 20).until(
@@ -177,7 +189,7 @@ def fetchWeather(chrome: WebDriver, link):
     info["Weather Status"] = fetchCurrentWeatherStatus(chrome)
     return fetchRemainingWeatherDetails(chrome, info)
 
-def fetchAQI(chrome: WebDriver, link):
+def fetchAQI(chrome: WebDriver, link, options):
     info = {
         "AQI": "",
         "AQI-PM2.5": "",
@@ -191,11 +203,12 @@ def fetchAQI(chrome: WebDriver, link):
     }
     
     while(True):
-        try:
+        try:            
             chrome.get(link)
         except TimeoutException:
             print(f"{datetime.datetime.now()}: ! timeout in AQI - waiting & reloading!")
             time.sleep(randint(1, 3) * 60)
+            chrome = resetBrowser(chrome, options)
             continue
         else:
             break
@@ -230,7 +243,7 @@ def fetchAQI(chrome: WebDriver, link):
         else:
             prev = val
 
-    return info
+    return info, chrome
 
 def writeTabular(city, filenames, weather, aqi, path = "./dataset/tabular/"):
     if(not os.path.isdir(path)):
@@ -285,35 +298,23 @@ while(True):
 
                     signal.alarm(alarmLenInMinutes * 60)
                     try:
-                        captureImageEC(chrome, link, cityPath + imgFilename)
+                        chrome = captureImageEC(chrome, link, cityPath + imgFilename, options)
                     except TimeoutException:
-                        chrome.close()
-                        chrome = webdriver.Chrome(service = Service(os.environ.get("chromedriver_path")), options = options)
-                        chrome.set_page_load_timeout(20)
-                        chrome.implicitly_wait(7)
-                        captureImageEC(chrome, link, cityPath + imgFilename)
+                        chrome = resetBrowser(chrome, options)
+                        chrome = captureImageEC(chrome, link, cityPath + imgFilename, options)
                     else:
                         signal.alarm(0)
                 
                 signal.alarm(alarmLenInMinutes * 60)
                 try:
-                    writeTabular(
-                        city = city["name"],
-                        filenames = imgFilenames,
-                        weather = fetchWeather(chrome, city["weather"]),
-                        aqi = fetchAQI(chrome, city["aqi"])
-                    )
+                    infoWeather = fetchWeather(chrome, city["weather"])
+                    infoAQI, chrome = fetchAQI(chrome, city["aqi"], options)
+                    writeTabular(city = city["name"], filenames = imgFilenames, weather = infoWeather, aqi = infoAQI)
                 except TimeoutException:
-                    chrome.close()
-                    chrome = webdriver.Chrome(service = Service(os.environ.get("chromedriver_path")), options = options)
-                    chrome.set_page_load_timeout(20)
-                    chrome.implicitly_wait(7)
-                    writeTabular(
-                        city = city["name"],
-                        filenames = imgFilenames,
-                        weather = fetchWeather(chrome, city["weather"]),
-                        aqi = fetchAQI(chrome, city["aqi"])
-                    )
+                    chrome = resetBrowser(chrome, options)
+                    infoWeather = fetchWeather(chrome, city["weather"])
+                    infoAQI, chrome = fetchAQI(chrome, city["aqi"], options)                    
+                    writeTabular(city = city["name"], filenames = imgFilenames, weather = infoWeather, aqi = infoAQI)
                 else:
                     signal.alarm(0)
 
