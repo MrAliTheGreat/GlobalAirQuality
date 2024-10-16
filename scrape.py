@@ -205,6 +205,22 @@ def fetchAQI(chrome: WebDriver, link, options):
     while(True):
         try:            
             chrome.get(link)
+            
+            info["AQI"] = WebDriverWait(chrome, 20).until(
+                EC.visibility_of_element_located((
+                    By.CSS_SELECTOR, "div[class='report__pi-number']"
+                ))
+            ).find_element(
+                By.CSS_SELECTOR, "span[data-role='current-pi']"
+            ).text
+
+            aqi, pollutants = WebDriverWait(chrome, 20).until(
+                EC.visibility_of_element_located((
+                    By.CSS_SELECTOR, "div[class='pollutants-desktop']"
+                ))
+            ).find_elements(
+                By.CSS_SELECTOR, "ul[class=pollutants-desktop__list]"
+            )            
         except TimeoutException:
             print(f"{datetime.datetime.now()}: ! timeout in AQI - waiting & reloading!")
             time.sleep(randint(1, 3) * 60)
@@ -212,22 +228,6 @@ def fetchAQI(chrome: WebDriver, link, options):
             continue
         else:
             break
-
-    info["AQI"] = WebDriverWait(chrome, 20).until(
-        EC.visibility_of_element_located((
-            By.CSS_SELECTOR, "div[class='report__pi-number']"
-        ))
-    ).find_element(
-        By.CSS_SELECTOR, "span[data-role='current-pi']"
-    ).text
-
-    aqi, pollutants = WebDriverWait(chrome, 20).until(
-        EC.visibility_of_element_located((
-            By.CSS_SELECTOR, "div[class='pollutants-desktop']"
-        ))
-    ).find_elements(
-        By.CSS_SELECTOR, "ul[class=pollutants-desktop__list]"
-    )
 
     for val in aqi.text.split("\n"):
         val = val.strip()
