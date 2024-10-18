@@ -257,7 +257,7 @@ def writeTabular(city, filenames, weather, aqi, path = "./dataset/tabular/"):
     for filename in filenames:
         info["Filename"] = filename
         if(not os.path.exists(path + f"{city}.csv")):
-            pd.DataFrame(columns = list(info.keys())).to_csv(path + f"{city}.csv" , index = False, header = True)
+            pd.DataFrame(columns = list(info.keys())).to_csv(path + f"{city}.csv", index = False, header = True)
         pd.DataFrame(info , index = [0]).to_csv(path + f"{city}.csv", mode = "a", index = False, header = False)
     print(f"{datetime.datetime.now()}: {path + city}.csv updated - {len(filenames)} new")
 
