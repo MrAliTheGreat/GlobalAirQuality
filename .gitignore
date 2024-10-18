@@ -4,3 +4,5 @@ chromedriver
 dataset/
 log
 utils/remove.txt
+kerasify/
+.ipynb_checkpoints
