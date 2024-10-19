@@ -16,6 +16,10 @@ RANDOM SAMPLING!!! --> Not suitable for time-series analysis
 
 # If you want you can select sampleCount by using pngCount.sh!
 
+if(not (len(sys.argv) > 1 and len(sys.argv) < 8)):
+    print("Wrong format! Exiting...")
+    sys.exit(0)
+
 if(sys.argv[1] == "-s" and sys.argv[3] == "-t", sys.argv[5] == "-sc"):
     srcDir = sys.argv[2]
     mergedPath = sys.argv[4]    
@@ -26,6 +30,7 @@ else:
 
 for file in os.listdir(srcDir):
     df = pd.read_csv(f"{srcDir}/{file}")
+    df = df.groupby(["Date", "Time"]).agg(pd.DataFrame.sample).reset_index()
     df.Filename = file[:-4] + "/" + df.Filename
     df = df.sample(n = sampleCount)
     if(not os.path.exists(mergedPath)):
