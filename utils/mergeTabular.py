@@ -12,6 +12,8 @@ RANDOM SAMPLING!!! --> Not suitable for time-series analysis
 -s: Source directory with all the csv files
 -t: Target file path which is the merged csv
 -sc: Sample Count for choosing the sample size for each csv
+
+Example: ./utils/mergeTabular.py -s ./dataset/tabular/ -t ./dataset/AQI.csv -sc 65
 """
 
 # If you want you can select sampleCount by using pngCount.sh!
@@ -22,6 +24,8 @@ if(not (len(sys.argv) > 1 and len(sys.argv) < 8)):
 
 if(sys.argv[1] == "-s" and sys.argv[3] == "-t", sys.argv[5] == "-sc"):
     srcDir = sys.argv[2]
+    if(srcDir[-1] == "/"):
+        srcDir = srcDir[:-1]
     mergedPath = sys.argv[4]    
     sampleCount = int(sys.argv[6])
 else:
