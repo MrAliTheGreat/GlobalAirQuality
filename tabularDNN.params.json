@@ -1,0 +1,42 @@
+{
+    "description": "Trying 16 nodes in the first hidden layer",
+    "params": {
+        "input_features": [
+            "Date",
+            "Time",
+            "Temperature",
+            "Real Feel",
+            "Weather Status",
+            "Wind Gusts",
+            "Humidity",
+            "Indoor Humidity",
+            "Humidity Status",
+            "Dew Point",
+            "Pressure",
+            "Pressure Direction",
+            "Cloud Cover",
+            "Visibility",
+            "Cloud Ceiling"
+        ],
+        "output_features": [
+            "AQI-PM2.5",
+            "AQI-PM10",
+            "AQI-NO2",
+            "AQI-O3"
+        ],
+        "hidden_layers": [
+            16,
+            8
+        ],
+        "activation": "relu",
+        "loss": "MAE",
+        "optimizer": "Adam",
+        "learning_rate": 0.002,
+        "metrics": [
+            "r2_score"
+        ],
+        "normalization_method": "z-score",
+        "batch_size": 32,
+        "epochs": 50
+    }
+}
